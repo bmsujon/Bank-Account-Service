@@ -1,0 +1,33 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /account-service/api/v1
+
+spring:
+  application:
+    name: account-service
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bank_account_db
+    username: root
+    password: wahid@1982
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  threads:
+    virtual:
+      enabled: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
