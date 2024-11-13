@@ -4,10 +4,13 @@ import com.amazonaws.services.cloudformation.model.AlreadyExistsException;
 import com.amazonaws.services.personalizeevents.model.InvalidInputException;
 import com.bank.account.core.common.responses.ExceptionResponse;
 import org.apache.coyote.BadRequestException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,7 +49,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         response.setMessage(exception.getMessage());
         response.setStatus(HttpStatus.NOT_FOUND);
         response.setCode(HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({UsernameNotFoundException.class})
+    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException exception) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setMessage(exception.getMessage());
+        response.setStatus(HttpStatus.NOT_FOUND);
+        response.setCode(HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({BadRequestException.class})
@@ -58,13 +70,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setMessage(exception.getMessage());
+        response.setStatus(HttpStatus.UNAUTHORIZED);
+        response.setCode(HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler({HttpClientErrorException.Unauthorized.class})
     public ResponseEntity<Object> handleBadRequestException(HttpClientErrorException.Unauthorized exception) {
         ExceptionResponse response = new ExceptionResponse();
         response.setMessage(exception.getMessage());
         response.setStatus(HttpStatus.UNAUTHORIZED);
         response.setCode(HttpStatus.UNAUTHORIZED.value());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setMessage(exception.getMessage());
+        response.setStatus(HttpStatus.CONFLICT);
+        response.setCode(HttpStatus.CONFLICT.value());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @Override

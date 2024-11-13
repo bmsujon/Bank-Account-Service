@@ -2,6 +2,8 @@ package com.bank.account.controller;
 
 import com.bank.account.core.common.responses.ExceptionResponse;
 import com.bank.account.core.dto.request.UserCreationRequest;
+import com.bank.account.core.dto.request.UserLoginRequest;
+import com.bank.account.core.dto.response.LoginResponse;
 import com.bank.account.core.dto.response.UsersPaginationResponse;
 import com.bank.account.core.entity.UserEntity;
 import com.bank.account.core.service.UserService;
@@ -48,15 +50,33 @@ public class UserController {
             schema = @Schema(implementation = ExceptionResponse.class)))
     @ApiResponse(responseCode = "500", description = "Unknown", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ExceptionResponse.class)))
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserCreationRequest request) {
 
         return ResponseEntity.ok(service.createUser(request));
     }
 
+    @Operation(summary = "Login user", description = """
+            Login and get token to use as Authorization header of all other endPoints
+            """)
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = LoginResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request. For validation errors, errorList contains values", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized Access", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "500", description = "Unknown", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ExceptionResponse.class)))
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest request) {
+        return ResponseEntity.ok(service.login(request));
+    }
+
     @Operation(summary = "Get user List.", description = """
-            Get user List(paginated list). You can filter them with username, phoneNo, email.
+            Get user List(paginated list). You can filter them with userName, phoneNo, email.
             """)
     @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = UserEntity.class)))
@@ -68,13 +88,13 @@ public class UserController {
             schema = @Schema(implementation = ExceptionResponse.class)))
     @GetMapping
     public ResponseEntity<?> getUsers(
-            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "userName", required = false) String userName,
             @RequestParam(value = "phoneNo", required = false) String phoneNo,
             @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "limit", defaultValue = "100") Integer limit) {
 
-        return ResponseEntity.ok(service.getUsers(username, phoneNo, email, PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "createdAt"))));
+        return ResponseEntity.ok(service.getUsers(userName, phoneNo, email, PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "createdAt"))));
     }
 
     @Operation(summary = "Get user details by id.", description = """

@@ -5,7 +5,6 @@ import com.amazonaws.services.personalizeevents.model.InvalidInputException;
 import com.bank.account.core.common.utls.AppUtils;
 import com.bank.account.core.dto.request.BankAccountCreationRequest;
 import com.bank.account.core.dto.response.BankAccountPaginationResponse;
-import com.bank.account.core.dto.response.UsersPaginationResponse;
 import com.bank.account.core.entity.BankAccountEntity;
 import com.bank.account.core.entity.UserEntity;
 import com.bank.account.core.enums.AccountTypeEnum;
@@ -20,11 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.webjars.NotFoundException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -93,7 +90,7 @@ public class BankAccountService {
             Predicate predicate = criteriaBuilder.conjunction();
 
             if (StringUtils.isNotBlank(username)) {
-                UserEntity userEntity = userRepository.findByUsername(username);
+                UserEntity userEntity = userRepository.findByUserName(username);
                 if(userEntity != null) {
                     predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("user"), userEntity));
                 }

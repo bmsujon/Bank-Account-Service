@@ -13,7 +13,7 @@ import java.time.Instant;
 public class UserCreationRequest {
     @Size(min = 6, max = 30)
     @NotBlank(message = "username required.")
-    private String username;
+    private String userName;
     @Size(min = 6, max = 20)
     @NotBlank(message = "password required.")
     private String password;
