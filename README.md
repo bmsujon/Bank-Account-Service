@@ -30,5 +30,6 @@ You can also change the DB name and change the script as per that name.
 This project uses open-api for documentation and you can find it here after you run the project:
 http://localhost:8083/account-service/api/v1/swagger-ui/index.html#
 
+In api doc, ther is step by step guide how to use and test the api endpoints.
 
 If you want to test it with postman, just test an endpoint with swagger once, and get the curl from there.
