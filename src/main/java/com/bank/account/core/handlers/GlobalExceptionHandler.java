@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -67,6 +68,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         response.setStatus(HttpStatus.BAD_REQUEST);
         response.setCode(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setMessage(exception.getMessage());
+        response.setStatus(HttpStatus.UNAUTHORIZED);
+        response.setCode(HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({HttpClientErrorException.Unauthorized.class})

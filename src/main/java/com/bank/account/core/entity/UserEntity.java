@@ -9,8 +9,6 @@ import java.time.Instant;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "users")
 public class UserEntity extends BaseEntity{
     @Id

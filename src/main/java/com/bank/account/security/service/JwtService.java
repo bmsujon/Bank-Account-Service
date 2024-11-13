@@ -1,11 +1,11 @@
 package com.bank.account.security.service;
 
-import com.bank.account.core.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,19 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private String secretKey = "cb7978cd5128a3a557b08d5be8330584d27f08baa9420b0bf3b226e50a616800";
+    //private String secretKey = "cb7978cd5128a3a557b08d5be8330584d27f08baa9420b0bf3b226e50a616800";
 
-    public String generateToken(UserEntity user) {
+    @Value("${jwt.secret.key}")
+    private String secretKey;
+
+    public String generateToken(String userName) {
         Map<String, Object> claims
                 = new HashMap<>();
         return Jwts
                 .builder()
                 .claims()
                 .add(claims)
-                .subject(user.getUserName())
+                .subject(userName)
                 .issuer("wahid")
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+ 60*10*1000))

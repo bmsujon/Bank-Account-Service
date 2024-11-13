@@ -3,6 +3,7 @@ package com.bank.account.controller;
 import com.bank.account.core.common.responses.ExceptionResponse;
 import com.bank.account.core.dto.request.UserCreationRequest;
 import com.bank.account.core.dto.request.UserLoginRequest;
+import com.bank.account.core.dto.response.LoginResponse;
 import com.bank.account.core.dto.response.UsersPaginationResponse;
 import com.bank.account.core.entity.UserEntity;
 import com.bank.account.core.service.UserService;
@@ -57,10 +58,10 @@ public class UserController {
     }
 
     @Operation(summary = "Login user", description = """
-            Create a user with the required info
+            Login and get token to use as Authorization header of all other endPoints
             """)
     @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = String.class)))
+            schema = @Schema(implementation = LoginResponse.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request. For validation errors, errorList contains values", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ExceptionResponse.class)))
     @ApiResponse(responseCode = "401", description = "Unauthorized Access", content = @Content(mediaType = "application/json",

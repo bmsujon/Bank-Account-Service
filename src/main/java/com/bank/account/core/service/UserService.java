@@ -3,6 +3,7 @@ package com.bank.account.core.service;
 import com.amazonaws.services.cloudformation.model.AlreadyExistsException;
 import com.bank.account.core.dto.request.UserCreationRequest;
 import com.bank.account.core.dto.request.UserLoginRequest;
+import com.bank.account.core.dto.response.LoginResponse;
 import com.bank.account.core.dto.response.UsersPaginationResponse;
 import com.bank.account.core.entity.UserEntity;
 import com.bank.account.core.repository.UserRepository;
@@ -16,6 +17,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -84,25 +87,31 @@ public class UserService {
         return userEntityOptional.get();
     }
 
-    public String verify(UserEntity user) {
-        log.info("user came to verify method with entity:" + user.toString());
-        Authentication authenticate = authenticationManager.authenticate(
+    private String verify(String userName, String password) {
+        log.info("user came to verify method with userName: {} and pass : {}", userName, password);
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        user.getUserName(), user.getPassword()
+                        userName, password
                 )
         );
-        log.info("authenticate: {}" , authenticate);
+        log.info("authenticate: {}" , authentication);
         //var u = userRepository.findByUserName(user.getUserName());
-        if(authenticate.isAuthenticated())
-            return jwtService.generateToken(user);
-        return "Password mismatched";
+        if(authentication.isAuthenticated())
+            return jwtService.generateToken(userName);
+        else {
+            throw new UsernameNotFoundException("invalid user request !");
+        }
     }
 
-    public String login(UserLoginRequest request) {
+    public LoginResponse login(UserLoginRequest request) {
         UserEntity userEntity = repository.findByUserName(request.getUserName());
         if(userEntity == null)
             throw new NotFoundException("User not found with userName: " + request.getUserName());
-//        return jwtService.generateToken(userEntity);
-        return verify(userEntity);
+
+//        String token = "Bearer " + jwtService.generateToken(userEntity);
+        String token = "Bearer " + verify(request.getUserName(), request.getPassword());
+
+        LoginResponse response = new LoginResponse(token);
+        return response;
     }
 }
