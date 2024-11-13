@@ -31,3 +31,6 @@ springdoc:
   swagger-ui:
     operations-sorter: alpha
     tags-sorter: alpha
+
+
+#spring.security.user.password=password

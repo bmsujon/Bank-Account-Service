@@ -53,7 +53,7 @@ public class BankAccountController {
     }
 
     @Operation(summary = "Get Bank Account List.", description = """
-            Get Bank Account List(paginated list) of users. You can filter them with username and bankAccountNo.
+            Get Bank Account List(paginated list) of users. You can filter them with userName and bankAccountNo.
             """)
     @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = BankAccountPaginationResponse.class)))
@@ -66,12 +66,12 @@ public class BankAccountController {
     @GetMapping
     public ResponseEntity<?> getUsers(
             @RequestParam(value = "accountNumber", required = false) String accountNumber,
-            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "userName", required = false) String userName,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "limit", defaultValue = "100") Integer limit) {
 
         Pageable pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return ResponseEntity.ok(service.getAccounts(accountNumber, username, pageable));
+        return ResponseEntity.ok(service.getAccounts(accountNumber, userName, pageable));
     }
 
     @Operation(summary = "Get bank account details by accountNumber.", description = """
